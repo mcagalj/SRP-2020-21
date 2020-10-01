@@ -1,11 +1,4 @@
-require("dotenv").config();
-const env = process.env.NODE_ENV || "development";
-
-const config = require("./config/config")[env];
-const Sequelize = require("sequelize");
-const { User } = require("./models");
-
-const sequelize = new Sequelize(config.url, config);
+const { sequelize, User } = require("./models");
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
