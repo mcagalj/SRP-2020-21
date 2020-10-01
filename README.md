@@ -17,7 +17,7 @@ U repozitoriju ćemo objavljivati kompletne projekte koje možete klonirati i po
 
     Git klijent će automatski generirati direktorij `SRP-2020-21` u kojem će biti pohranjen cijeli repozitorij.
 
-3. Pokretanje danog Node.js projekta. Ovo možete napraviti na više načina ovisno u kojoj fazi razvoja se nalazite. Uđite u direktorij `SRP-2020-21\postgres-express-node` i pokrenite sljedeću naredbu:
+3. Pokretanje Node.js aplikacije. Ovo možete napraviti na više načina ovisno u kojoj fazi razvoja se nalazite. Uđite u direktorij `SRP-2020-21\postgres-express-node` i izvršite sljedeću naredbu:
    
    > VAŽNO: Prije pokretanja aplikacije trebate u direktoriju `SRP-2020-21` kreirati `.env` datoteku i popuniti je kako je objašnjeno u datoteci `.env.example`. 
 
