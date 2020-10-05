@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { fieldEncryption } = require("../services/sequelize-field-encrypt");
+
 module.exports = (sequelize, DataTypes) => {
   class MedicalTest extends Model {
     /**
@@ -15,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
   MedicalTest.init(
     {
       name: DataTypes.STRING,
-      result: DataTypes.STRING,
+      // result: DataTypes.STRING,
+      result: fieldEncryption("result", {
+        type: DataTypes.STRING,
+        field: "result",
+      }),
     },
     {
       sequelize,

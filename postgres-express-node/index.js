@@ -1,4 +1,9 @@
 const { sequelize, User, MedicalTest } = require("./models");
+const {
+  fieldEncryption,
+  encrypt,
+  decrypt,
+} = require("./services/sequelize-field-encrypt");
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -45,12 +50,11 @@ function printMedicalTests({ username = null, tests }) {
 }
 
 async function init() {
-  // await assertDatabaseConnectionOk();
+  await assertDatabaseConnectionOk();
 
   // let user = await getUserByUsername("john");
   // console.log(user);
-
-  // let user = await getUserByUsername("mirta");
+  // user = await getUserByUsername("mirta");
   // console.log(user);
 
   let tests = await getMedicalTests({
@@ -62,6 +66,42 @@ async function init() {
   let username = "mirta";
   tests = await getMedicalTestsForUser(username);
   printMedicalTests({ username, tests });
+
+  try {
+    let message = encrypt({
+      key: Buffer.from(process.env.DB_FIELD_ENC_KEY, "base64"),
+      plaintext: "test",
+    });
+
+    let decryptedMessage = decrypt({
+      key: Buffer.from(process.env.DB_FIELD_ENC_KEY, "base64"),
+      message,
+    });
+
+    console.table({
+      plaintext: "test",
+      encryptedMessage: message,
+      decryptedMessage,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  // const { id } = await getUserByUsername("john", { attributes: ["id"] });
+  // if (id) {
+  //   let newTest = MedicalTest.build({
+  //     UserId: id,
+  //     name: "HIV",
+  //     result: `negative`,
+  //     // result: JSON.stringify({ result: "negative", user: "john", id }),
+  //   });
+
+  //   newTest = await newTest.save();
+  //   console.log(newTest.toJSON());
+  // }
+
+  // tests = await getMedicalTestsForUser("john");
+  // printMedicalTests({ username: "john", tests });
 }
 
 init();
