@@ -1,4 +1,4 @@
-const { sequelize, User } = require("./models");
+const { sequelize, User, MedicalTest } = require("./models");
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -11,24 +11,57 @@ async function assertDatabaseConnectionOk() {
   }
 }
 
-async function getUsers() {
-  const users = await User.findAll();
+async function getUsers(options = {}) {
+  const users = await User.findAll((options = {}));
   return users;
 }
 
-async function getUserByUsername(username) {
-  const user = await User.findOne({ where: { username } });
+async function getUserByUsername(username, options = {}) {
+  const user = await User.findOne({ ...options, where: { username } });
   return user;
 }
 
+async function getMedicalTests(options = {}) {
+  const tests = await MedicalTest.findAll(options);
+  return tests;
+}
+
+async function getMedicalTestsForUser(username = "") {
+  let user = await getUserByUsername(username, {
+    attributes: ["username"], // get only the username
+    include: { model: MedicalTest, attributes: ["name", "result"] },
+  });
+  return user && user.MedicalTests ? user.MedicalTests : [];
+}
+
+function printMedicalTests({ username = null, tests }) {
+  const results = tests.map((test) => ({
+    username: !username ? test.User.username : username,
+    result: test.result,
+    name: test.name,
+  }));
+  // NOTE: table output requires Node.js version >=10.16.0
+  console.table(results);
+}
+
 async function init() {
-  await assertDatabaseConnectionOk();
+  // await assertDatabaseConnectionOk();
 
-  let user = await getUserByUsername("john");
-  console.log(user);
+  // let user = await getUserByUsername("john");
+  // console.log(user);
 
-  user = await getUserByUsername("mirta");
-  console.log(user);
+  // let user = await getUserByUsername("mirta");
+  // console.log(user);
+
+  let tests = await getMedicalTests({
+    attributes: ["result", "name"],
+    include: { model: User, attributes: ["username"] },
+  });
+  printMedicalTests({ tests });
+
+  let username = "mirta";
+  tests = await getMedicalTestsForUser(username);
+  printMedicalTests({ username, tests });
 }
 
 init();
