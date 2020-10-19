@@ -97,38 +97,47 @@ async function init() {
   // tests = await getMedicalTestsForUser("john");
   // printMedicalTests({ username: "john", tests });
 
-  let key = Buffer.from(
-    "0011223344556677889900112233445500112233445566778899001122334455",
-    "hex"
-  );
+  /**
+   * * Symmetric crypto-system
+   */
+  try {
+    // ! Secret encryption KEY
+    const key = Buffer.from(
+      "0011223344556677889900112233445500112233445566778899001122334455",
+      "hex"
+    );
 
-  let plaintext = "this is a secret";
+    // ! PLAINTEXT
+    let plaintext = "this is a secret";
+    // console.log(plaintext.length * 8);
 
-  let { ciphertext } = cipher.encrypt({
-    key,
-    plaintext,
-    padding: false,
-  });
+    // ! CIPHER (encryption algorithm) and CIPHERTEXT
+    let { ciphertext } = cipher.encrypt({ key, plaintext, padding: false });
 
-  let { plaintext: decryptedPlaintext } = cipher.decrypt({
-    key,
-    ciphertext,
-    padding: false,
-  });
+    // ! CIPHER (decryption algorithm)
+    let { plaintext: decryptedText } = cipher.decrypt({
+      key,
+      ciphertext,
+      padding: false,
+    });
 
-  console.table([
-    { plaintext, ciphertext, "decrypted plaintext": decryptedPlaintext },
-  ]);
+    console.table([{ plaintext, ciphertext, "decrypted text": decryptedText }]);
 
-  // Brute-force the encryption key
-  // const test_key = Buffer.alloc(32);
-  // for (;;) {
-  //   console.log(
-  //     test_key,
-  //     cipher.decrypt({ key: test_key, ciphertext, padding: false })
-  //   );
-  //   increment(test_key);
-  // }
+    // * Brute-force attack on the secret encryption key
+    const test_key = Buffer.alloc(32);
+    for (;;) {
+      let { plaintext: decryptedText } = cipher.decrypt({
+        key: test_key,
+        ciphertext,
+        padding: false,
+      });
+
+      console.log(test_key.toString("hex"), "==>", decryptedText);
+      increment(test_key);
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
 }
 
 init();
