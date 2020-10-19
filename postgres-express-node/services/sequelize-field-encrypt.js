@@ -82,7 +82,7 @@ function fieldEncryption(fieldName, options = {}) {
 
   const ops = {
     set: function (value) {
-      console.log(this.UserId + this.name + this.timestamp);
+      // console.log("==> set:", this.UserId + this.name + this.timestamp);
       if (value && value !== null) {
         this.setDataValue(
           fieldName,
@@ -98,7 +98,7 @@ function fieldEncryption(fieldName, options = {}) {
     },
 
     get: function () {
-      console.log(this.UserId + this.name + this.timestamp);
+      // console.log("==> get:", this.UserId + this.name + this.timestamp);
       const value = this.getDataValue(fieldName);
       if (value && value !== null) {
         return decrypt_GCM({

@@ -39,7 +39,7 @@ async function getMedicalTestsForUser(username = "") {
     attributes: ["username"], // get only the username
     include: {
       model: MedicalTest,
-      attributes: ["name", "result", "id", "UserId", "updatedAt"],
+      attributes: ["id", "name", "result", "timestamp", "UserId"],
     },
   });
   return user && user.MedicalTests ? user.MedicalTests : [];
@@ -61,11 +61,15 @@ async function init() {
   // console.log(user);
   // user = await getUserByUsername("mirta");
   // console.log(user);
-  // let tests = await getMedicalTests({
-  //   attributes: ["result", "name"],
-  //   include: { model: User, attributes: ["username"] },
-  // });
-  // printMedicalTests({ tests });
+  try {
+    let tests = await getMedicalTests({
+      attributes: ["UserId", "name", "result", "timestamp"],
+      include: { model: User, attributes: ["username"] },
+    });
+    printMedicalTests({ tests });
+  } catch (err) {
+    console.log(err.message);
+  }
   // let username = "mirta";
   // tests = await getMedicalTestsForUser(username);
   // printMedicalTests({ username, tests });
@@ -87,62 +91,30 @@ async function init() {
   //   console.log(error.message);
   // }
 
-  const { id } = await getUserByUsername("john", { attributes: ["id"] });
+  try {
+    const { id } = await getUserByUsername("john", { attributes: ["id"] });
 
-  if (id) {
-    let newTest = MedicalTest.build({
-      UserId: id,
-      name: "HIV",
-      result: "negative",
-    });
-    console.log(newTest.toJSON());
-    newTest = await newTest.save();
-    console.log(newTest.toJSON());
+    if (id) {
+      let newTest = MedicalTest.build({
+        UserId: id,
+        name: "HIV",
+        timestamp: new Date(),
+        // ! apparently, the value that we are setting using
+        // ! a set() function should appear last to be able
+        // ! to read the other fields from the model in the
+        // ! computation
+        result: "negative",
+      });
+
+      newTest = await newTest.save();
+    }
+
+    tests = await getMedicalTestsForUser("john");
+    printMedicalTests({ username: "john", tests });
+  } catch (err) {
+    console.log(err.message);
+    // console.log(err);
   }
-  tests = await getMedicalTestsForUser("john");
-  printMedicalTests({ username: "john", tests });
-
-  // let key = Buffer.from(
-  //   "0011223344556677889900112233445500112233445566778899001122334455",
-  //   "hex"
-  // );
-
-  // let plaintext = "this is a secret";
-
-  // let { ciphertext } = cipher.encrypt({
-  //   key,
-  //   plaintext,
-  //   padding: false,
-  // });
-
-  // let { plaintext: decryptedPlaintext } = cipher.decrypt({
-  //   key,
-  //   ciphertext,
-  //   padding: false,
-  // });
-
-  // console.table([
-  //   { plaintext, ciphertext, "decrypted plaintext": decryptedPlaintext },
-  // ]);
-
-  // Brute-force the encryption key
-  // const test_key = Buffer.alloc(32);
-  // for (;;) {
-  //   console.log(
-  //     test_key,
-  //     cipher.decrypt({ key: test_key, ciphertext, padding: false })
-  //   );
-  //   increment(test_key);
-  // }
 }
 
 init();
-
-//--------------------------------
-// Helper/utility functions
-//--------------------------------
-function increment(buffer) {
-  for (let i = buffer.length - 1; i >= 0; i--) {
-    if (buffer[i]++ !== 255) break;
-  }
-}

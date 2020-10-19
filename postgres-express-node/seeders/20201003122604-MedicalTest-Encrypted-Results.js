@@ -20,7 +20,6 @@ module.exports = {
       const createdAt = new Date();
       const updatedAt = new Date();
       const timestamp = new Date("January 1, 2020 08:24:00");
-      // console.log(user.id + name + updatedAt);
 
       return {
         name,
