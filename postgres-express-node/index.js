@@ -6,6 +6,7 @@ const {
 } = require("./services/sequelize-field-encrypt");
 
 const crypto = require("crypto");
+const fs = require("fs");
 const { ecb: cipher } = require("./services/ciphers");
 
 async function assertDatabaseConnectionOk() {
@@ -98,42 +99,51 @@ async function init() {
   // printMedicalTests({ username: "john", tests });
 
   /**
-   * * Symmetric crypto-system
+   * * Message authentication (hash and MAC crypto functions)
    */
   try {
-    // ! Secret encryption KEY
-    const key = Buffer.from(
-      "0011223344556677889900112233445500112233445566778899001122334455",
-      "hex"
-    );
+    const secret = "my supper secret";
+    let message = "Authenticate this message.";
 
-    // ! PLAINTEXT
-    let plaintext = "this is a secret";
-    // console.log(plaintext.length * 8);
+    let hmac = crypto.createHmac("sha256", secret); // ! Message authentication code
+    let authTag = hmac.update(message).digest(); // ! Message digest/authentication code
+    console.table([
+      { message, "message digest/authentication tag": authTag.toString("hex") },
+    ]);
 
-    // ! CIPHER (encryption algorithm) and CIPHERTEXT
-    let { ciphertext } = cipher.encrypt({ key, plaintext, padding: false });
+    // * ===============================
+    // * Example: Authenticating a file
+    // *--------------------------------
+    const CREATE_TAG = false;
 
-    // ! CIPHER (decryption algorithm)
-    let { plaintext: decryptedText } = cipher.decrypt({
-      key,
-      ciphertext,
-      padding: false,
-    });
+    if (CREATE_TAG) {
+      // * Authenticate the file
 
-    console.table([{ plaintext, ciphertext, "decrypted text": decryptedText }]);
+      const input = fs.createReadStream("test.txt");
+      const output = fs.createWriteStream("test.tag");
+      const hmac = crypto.createHmac("sha256", secret);
 
-    // * Brute-force attack on the secret encryption key
-    const test_key = Buffer.alloc(32);
-    for (;;) {
-      let { plaintext: decryptedText } = cipher.decrypt({
-        key: test_key,
-        ciphertext,
-        padding: false,
+      hmac.update("text.txt"); // ! Protecting the file name
+      input
+        .pipe(hmac) // ! Protecting the file content
+        .pipe(output)
+        .on("finish", () => output.end());
+    } else {
+      // * Verify the file authenticity
+
+      const input = fs.createReadStream("test.txt");
+      const tag = fs.readFileSync("test.tag");
+      const hmac = crypto.createHmac("sha256", secret); // ! Message authentication code
+
+      hmac.update("text.txt");
+      input.pipe(hmac).on("finish", () => {
+        const isMessageAuthentic = crypto.timingSafeEqual(hmac.read(), tag); // ! Compare the auth tags
+        console.log(
+          `The file "test.txt" ${
+            isMessageAuthentic ? "IS" : "IS NOT"
+          } authentic.`
+        );
       });
-
-      console.log(test_key.toString("hex"), "==>", decryptedText);
-      increment(test_key);
     }
   } catch (err) {
     console.log(err.message);

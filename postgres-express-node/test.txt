@@ -1,0 +1,13 @@
+19.10.2020 11:08
+
+Kolegij je koncipiran kao uvod u područje računalne i informacijske sigurnosti. Studenti će steći osnovna znanja potrebna za analizu sigurnosnih prijetnji, evaluaciju rizika i razvoj odgovarajućih sigurnosnih zaštita za računalne i mrežne sustave. Ovisno o raspoloživom vremenu, planiramo obraditi sljedeće teme:
+
+    uvod u računalnu sigurnost
+    sigurnosne prijetnje i sigurnosni ciljevi
+    osnove kriptografije (enkripcija, autentikacija, digitalni potpisi)
+    sigurnost operacijskih sustava (Windows i Unix)
+    kontrola pristupa, autorizacija i autentikacija korisnika
+    zaporke, biometrijska autentikacija
+    napadi na zaporke (napadi silom, napadi bazirani na rječniku, rainbow tablice)
+    maliciozni kod (malware)
+    DoS i DDoS napadi
