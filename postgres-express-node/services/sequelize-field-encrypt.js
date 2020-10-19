@@ -82,17 +82,30 @@ function fieldEncryption(fieldName, options = {}) {
 
   const ops = {
     set: function (value) {
+      console.log(this.UserId + this.name + this.timestamp);
       if (value && value !== null) {
-        this.setDataValue(fieldName, encrypt_GCM({ plaintext: value, key }));
+        this.setDataValue(
+          fieldName,
+          encrypt_GCM({
+            plaintext: value,
+            key,
+            aad: this.UserId + this.name + this.timestamp,
+          })
+        );
       } else {
         this.setDataValue(fieldName, null);
       }
     },
 
     get: function () {
+      console.log(this.UserId + this.name + this.timestamp);
       const value = this.getDataValue(fieldName);
       if (value && value !== null) {
-        return decrypt_GCM({ message: value, key });
+        return decrypt_GCM({
+          message: value,
+          key,
+          aad: this.UserId + this.name + this.timestamp,
+        });
       } else {
         return null;
       }

@@ -37,7 +37,10 @@ async function getMedicalTests(options = {}) {
 async function getMedicalTestsForUser(username = "") {
   let user = await getUserByUsername(username, {
     attributes: ["username"], // get only the username
-    include: { model: MedicalTest, attributes: ["name", "result"] },
+    include: {
+      model: MedicalTest,
+      attributes: ["name", "result", "id", "UserId", "updatedAt"],
+    },
   });
   return user && user.MedicalTests ? user.MedicalTests : [];
 }
@@ -83,61 +86,54 @@ async function init() {
   // } catch (error) {
   //   console.log(error.message);
   // }
-  // const { id } = await getUserByUsername("john", { attributes: ["id"] });
-  // if (id) {
-  //   let newTest = MedicalTest.build({
-  //     UserId: id,
-  //     name: "HIV",
-  //     result: `negative`,
-  //     // result: JSON.stringify({ result: "negative", user: "john", id }),
-  //   });
-  //   newTest = await newTest.save();
-  //   console.log(newTest.toJSON());
-  // }
-  // tests = await getMedicalTestsForUser("john");
-  // printMedicalTests({ username: "john", tests });
 
-  /**
-   * * Symmetric crypto-system
-   */
-  try {
-    // ! Secret encryption KEY
-    const key = Buffer.from(
-      "0011223344556677889900112233445500112233445566778899001122334455",
-      "hex"
-    );
+  const { id } = await getUserByUsername("john", { attributes: ["id"] });
 
-    // ! PLAINTEXT
-    let plaintext = "this is a secret";
-    // console.log(plaintext.length * 8);
-
-    // ! CIPHER (encryption algorithm) and CIPHERTEXT
-    let { ciphertext } = cipher.encrypt({ key, plaintext, padding: false });
-
-    // ! CIPHER (decryption algorithm)
-    let { plaintext: decryptedText } = cipher.decrypt({
-      key,
-      ciphertext,
-      padding: false,
+  if (id) {
+    let newTest = MedicalTest.build({
+      UserId: id,
+      name: "HIV",
+      result: "negative",
     });
-
-    console.table([{ plaintext, ciphertext, "decrypted text": decryptedText }]);
-
-    // * Brute-force attack on the secret encryption key
-    const test_key = Buffer.alloc(32);
-    for (;;) {
-      let { plaintext: decryptedText } = cipher.decrypt({
-        key: test_key,
-        ciphertext,
-        padding: false,
-      });
-
-      console.log(test_key.toString("hex"), "==>", decryptedText);
-      increment(test_key);
-    }
-  } catch (err) {
-    console.log(err.message);
+    console.log(newTest.toJSON());
+    newTest = await newTest.save();
+    console.log(newTest.toJSON());
   }
+  tests = await getMedicalTestsForUser("john");
+  printMedicalTests({ username: "john", tests });
+
+  // let key = Buffer.from(
+  //   "0011223344556677889900112233445500112233445566778899001122334455",
+  //   "hex"
+  // );
+
+  // let plaintext = "this is a secret";
+
+  // let { ciphertext } = cipher.encrypt({
+  //   key,
+  //   plaintext,
+  //   padding: false,
+  // });
+
+  // let { plaintext: decryptedPlaintext } = cipher.decrypt({
+  //   key,
+  //   ciphertext,
+  //   padding: false,
+  // });
+
+  // console.table([
+  //   { plaintext, ciphertext, "decrypted plaintext": decryptedPlaintext },
+  // ]);
+
+  // Brute-force the encryption key
+  // const test_key = Buffer.alloc(32);
+  // for (;;) {
+  //   console.log(
+  //     test_key,
+  //     cipher.decrypt({ key: test_key, ciphertext, padding: false })
+  //   );
+  //   increment(test_key);
+  // }
 }
 
 init();

@@ -16,15 +16,23 @@ module.exports = {
 
     const dummy_tests = users.map((user) => {
       let result = user.id % 2 === 0 ? "positive" : "negative";
+      const name = "Covid-19";
+      const createdAt = new Date();
+      const updatedAt = new Date();
+      const timestamp = new Date("January 1, 2020 08:24:00");
+      // console.log(user.id + name + updatedAt);
+
       return {
-        name: "Covid-19",
+        name,
         result: encrypt({
           key: Buffer.from(process.env.DB_FIELD_ENC_KEY, "base64"),
           plaintext: result,
+          aad: user.id + name + timestamp,
         }),
+        timestamp,
         UserId: user.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt,
+        updatedAt,
       };
     });
 
