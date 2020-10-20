@@ -65,19 +65,24 @@ async function init() {
     const secret = "my supper secret";
     let message = { message: "Authenticate this message." };
 
+    // * Default token
     let token = jwt.sign(message, secret);
     let decodedToken = jwt.decode(token);
-    console.log(token);
-    console.log(decodedToken); // * Return only payload
+    console.log("\nDecoded token:", decodedToken); // * Return only payload
+    console.log("Token:", token);
 
+    // * Token with expiration time of 1h
     token = jwt.sign(message, secret, { expiresIn: "1h" });
     decodedToken = jwt.decode(token, { complete: true }); // * Include all parts
-    console.log(token);
-    console.log(decodedToken);
+    console.log("\nDecoded token (complete):", decodedToken);
+    console.log("Token:", token);
 
     // * ========================
     // *  Verify token
     // * ------------------------
+    console.log("\n");
+    // token = token.replace("e", "f"); // ! Try to change a part of the token
+    // console.log(token);
     decodedValidatedToken = await verifyJwt({ secret, token });
     console.log("Validated token:", decodedValidatedToken);
   } catch (err) {
