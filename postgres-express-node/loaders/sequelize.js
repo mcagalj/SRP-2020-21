@@ -1,7 +1,6 @@
 const { sequelize } = require("../models");
-const Logger = require("./logger");
 
-async function assertDatabaseConnectionOk() {
+async function assertDatabaseConnectionOk({ Logger }) {
   Logger.info("Checking database connection...");
 
   try {
@@ -13,4 +12,4 @@ async function assertDatabaseConnectionOk() {
   }
 }
 
-module.exports = () => assertDatabaseConnectionOk();
+module.exports = ({ Logger }) => assertDatabaseConnectionOk({ Logger });

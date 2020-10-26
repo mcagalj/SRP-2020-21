@@ -4,7 +4,7 @@ if (envFound.error) {
   throw new Error("Couldn't find .env file");
 }
 
-const Logger = require("../loaders/logger");
+const { Logger } = require("../loaders/logger");
 
 /**
  * Sequelize config

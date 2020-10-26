@@ -1,6 +1,16 @@
 const winston = require("winston");
+const morgan = require("morgan");
+
 const config = require("../config");
 
+/**
+ * console.{log, error, warn}
+ */
+const DefaultLogger = console;
+
+/**
+ * Winston logger configuration and instance
+ */
 const transports = [];
 if (process.env.NODE_ENV !== "development") {
   transports.push(new winston.transports.Console());
@@ -16,7 +26,7 @@ if (process.env.NODE_ENV !== "development") {
 }
 
 const LoggerInstance = winston.createLogger({
-  level: config.logs.level,
+  level: config.logs.winston.level,
   levels: winston.config.npm.levels,
   format: winston.format.combine(
     winston.format.timestamp({
@@ -29,4 +39,18 @@ const LoggerInstance = winston.createLogger({
   transports,
 });
 
-module.exports = LoggerInstance;
+/**
+ * Morgan logger instance
+ */
+const HttpLoggerInstance = morgan(config.logs.morgan.format, {
+  stream: {
+    write(message) {
+      LoggerInstance.info(message.substring(0, message.lastIndexOf("\n")));
+    },
+  },
+});
+
+module.exports = {
+  Logger: LoggerInstance || DefaultLogger,
+  HttpLogger: HttpLoggerInstance,
+};

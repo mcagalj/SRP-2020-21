@@ -13,8 +13,17 @@ if (envFound.error) {
 module.exports = {
   port: process.env.PORT,
 
-  // For winston logger
+  // For winston and morgan loggers
   logs: {
-    level: process.env.LOG_LEVEL || "debug",
+    winston: {
+      level: process.env.LOG_LEVEL || "debug",
+    },
+    morgan: {
+      format: process.env.MORGAN_FORMAT || "combined",
+    },
+  },
+
+  api: {
+    prefix: "/api",
   },
 };
