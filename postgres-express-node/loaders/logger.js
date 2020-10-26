@@ -39,6 +39,8 @@ const LoggerInstance = winston.createLogger({
   transports,
 });
 
+winston.loggers.add("logger", LoggerInstance);
+
 /**
  * Morgan logger instance
  */
