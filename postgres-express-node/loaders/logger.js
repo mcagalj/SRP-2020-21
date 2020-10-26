@@ -25,7 +25,21 @@ if (process.env.NODE_ENV !== "development") {
   );
 }
 
-const LoggerInstance = winston.createLogger({
+// const LoggerInstance = winston.createLogger({
+//   level: config.logs.winston.level,
+//   levels: winston.config.npm.levels,
+//   format: winston.format.combine(
+//     winston.format.timestamp({
+//       format: "YYYY-MM-DD HH:mm:ss",
+//     }),
+//     winston.format.errors({ stack: true }),
+//     winston.format.splat(),
+//     winston.format.json()
+//   ),
+//   transports,
+// });
+
+winston.loggers.add("logger", {
   level: config.logs.winston.level,
   levels: winston.config.npm.levels,
   format: winston.format.combine(
@@ -39,7 +53,7 @@ const LoggerInstance = winston.createLogger({
   transports,
 });
 
-winston.loggers.add("logger", LoggerInstance);
+const LoggerInstance = winston.loggers.get("logger");
 
 /**
  * Morgan logger instance

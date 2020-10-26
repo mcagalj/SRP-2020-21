@@ -34,7 +34,7 @@ module.exports = ({ app, HttpLogger: logger }) => {
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
-      errors: {
+      error: {
         message: err.message,
       },
     });

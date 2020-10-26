@@ -1,4 +1,7 @@
+const winston = require("winston");
 const { userServiceInstance } = require("../../services");
+
+const Logger = winston.loggers.get("logger");
 
 exports.getUsers = async (req, res) => {
   const users = await userServiceInstance.getAllUsers();
@@ -11,8 +14,13 @@ exports.getUser = async (req, res) => {
   res.json({ user });
 };
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   const { username, password } = req.body;
-  const user = await userServiceInstance.createUser({ username, password });
-  res.json({ user });
+  try {
+    const user = await userServiceInstance.createUser({ username, password });
+    res.json({ user });
+  } catch (err) {
+    Logger.error(err);
+    return res.status(400).json({ error: { message: err.message } });
+  }
 };

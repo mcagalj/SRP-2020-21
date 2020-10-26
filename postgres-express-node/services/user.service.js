@@ -1,6 +1,7 @@
 class UserService {
-  constructor({ userModel }) {
+  constructor({ logger, userModel }) {
     this.userModel = userModel;
+    this.logger = logger;
   }
 
   async getAllUsers() {
@@ -18,8 +19,13 @@ class UserService {
   }
 
   async createUser(userDTO) {
-    const user = await this.userModel.create(userDTO);
-    return user;
+    try {
+      const user = await this.userModel.create(userDTO);
+      return user;
+    } catch (err) {
+      this.logger.error("Error %o", err);
+      throw err;
+    }
   }
 
   updateUser() {}

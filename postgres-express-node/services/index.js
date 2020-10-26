@@ -1,11 +1,7 @@
-/**
- * Services to be used in controllers
- */
+const winston = require("winston");
 const UserService = require("./user.service");
-
-/**
- * Models consumed by services
- */
 const { User } = require("../models");
 
-exports.userServiceInstance = new UserService({ userModel: User });
+const logger = winston.loggers.get("logger");
+
+exports.userServiceInstance = new UserService({ logger, userModel: User });

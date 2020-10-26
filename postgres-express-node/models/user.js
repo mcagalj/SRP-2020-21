@@ -14,7 +14,17 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      username: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        validate: {
+          isUnique: async (username) => {
+            const user = await User.findOne({ where: { username } });
+            if (user) {
+              throw new Error("Username already in use");
+            }
+          },
+        },
+      },
       password: DataTypes.STRING,
     },
     {
