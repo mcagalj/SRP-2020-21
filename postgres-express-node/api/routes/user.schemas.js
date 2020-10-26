@@ -6,3 +6,13 @@ exports.getUser = {
   },
   required: ["username"],
 };
+
+exports.createUser = {
+  title: "Add a new user",
+  type: "object",
+  properties: {
+    username: { type: "string", minLength: 1 },
+    password: { type: "string", minLength: 8 },
+  },
+  required: ["username", "password"],
+};

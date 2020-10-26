@@ -16,4 +16,9 @@ module.exports = (rootRouter) => {
     SchemaValidator.validate("getUser"),
     UserController.getUser
   );
+  router.post(
+    "/user",
+    SchemaValidator.validate("createUser"),
+    UserController.createUser
+  );
 };
