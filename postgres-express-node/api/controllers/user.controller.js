@@ -14,11 +14,22 @@ exports.getUser = async (req, res) => {
   res.json({ user });
 };
 
-exports.createUser = async (req, res, next) => {
+exports.createUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await userServiceInstance.createUser({ username, password });
     res.json({ user });
+  } catch (err) {
+    Logger.error(err);
+    return res.status(400).json({ error: { message: err.message } });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const { username } = req.body;
+  try {
+    await userServiceInstance.deleteUser({ username });
+    res.status(204).json({});
   } catch (err) {
     Logger.error(err);
     return res.status(400).json({ error: { message: err.message } });

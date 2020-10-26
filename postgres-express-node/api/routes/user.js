@@ -11,14 +11,22 @@ module.exports = (rootRouter) => {
   rootRouter.use("/", router);
 
   router.get("/users", UserController.getUsers);
+
   router.get(
     "/user",
     SchemaValidator.validate("getUser"),
     UserController.getUser
   );
+
   router.post(
     "/user",
     SchemaValidator.validate("createUser"),
     UserController.createUser
+  );
+
+  router.delete(
+    "/user",
+    SchemaValidator.validate("deleteUser"),
+    UserController.deleteUser
   );
 };

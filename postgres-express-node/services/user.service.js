@@ -29,7 +29,15 @@ class UserService {
   }
 
   updateUser() {}
-  deleteUser() {}
+
+  async deleteUser(userDTO) {
+    try {
+      await this.userModel.destroy({ where: userDTO });
+    } catch (err) {
+      this.logger.error("Error %o", err);
+      throw err;
+    }
+  }
 }
 
 module.exports = UserService;

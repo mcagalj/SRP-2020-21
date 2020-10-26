@@ -16,3 +16,12 @@ exports.createUser = {
   },
   required: ["username", "password"],
 };
+
+exports.deleteUser = {
+  title: "Delete an existing user",
+  type: "object",
+  properties: {
+    username: { type: "string", minLength: 1 },
+  },
+  required: ["username"],
+};
