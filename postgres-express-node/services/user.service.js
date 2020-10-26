@@ -8,7 +8,15 @@ class UserService {
     return users;
   }
 
-  getUser() {}
+  async getUser({ username }) {
+    const user = await this.userModel.findOne({
+      // * to include only some attributes use:
+      // * attributes: ["username", "id"]
+      where: { username },
+    });
+    return user;
+  }
+
   createUser() {}
   updateUser() {}
   deleteUser() {}

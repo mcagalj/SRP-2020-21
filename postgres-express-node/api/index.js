@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const hello = require("./routes/hello");
-const users = require("./routes/users");
+const user = require("./routes/user");
 
 module.exports = () => {
   hello(router);
-  users(router);
+  user(router);
 
   return router;
 };
