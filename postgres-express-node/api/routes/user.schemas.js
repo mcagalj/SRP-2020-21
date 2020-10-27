@@ -17,6 +17,16 @@ exports.createUser = {
   required: ["username", "password"],
 };
 
+exports.updateUser = {
+  title: "Update the existing user data",
+  type: "object",
+  properties: {
+    username: { type: "string", minLength: 1 },
+    password: { type: "string", minLength: 8 },
+  },
+  anyOf: [{ required: ["username"] }, { required: ["password"] }],
+};
+
 exports.deleteUser = {
   title: "Delete an existing user",
   type: "object",

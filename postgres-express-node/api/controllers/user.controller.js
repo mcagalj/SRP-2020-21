@@ -25,6 +25,22 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { username, password } = req.body;
+  try {
+    const user = await userServiceInstance.updateUser({
+      id,
+      username,
+      password,
+    });
+    res.json({ user });
+  } catch (err) {
+    Logger.error(err);
+    return res.status(400).json({ error: { message: err.message } });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   const { username } = req.body;
   try {

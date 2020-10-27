@@ -24,6 +24,12 @@ module.exports = (rootRouter) => {
     UserController.createUser
   );
 
+  router.put(
+    "/user/:id",
+    SchemaValidator.validate("updateUser"),
+    UserController.updateUser
+  );
+
   router.delete(
     "/user",
     SchemaValidator.validate("deleteUser"),

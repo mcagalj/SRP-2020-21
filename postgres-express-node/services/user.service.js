@@ -28,7 +28,24 @@ class UserService {
     }
   }
 
-  updateUser() {}
+  async updateUser(userDTO) {
+    try {
+      let user = await this.userModel.findOne({
+        where: { id: userDTO.id },
+      });
+
+      if (!user) {
+        throw new Error(`No user with id ${userDTO.id} found`);
+      }
+
+      const { id, ..._userDTO } = userDTO;
+      user = user.update(_userDTO);
+      return user;
+    } catch (err) {
+      this.logger.error("Error %o", err);
+      throw err;
+    }
+  }
 
   async deleteUser(userDTO) {
     try {
