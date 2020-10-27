@@ -5,17 +5,27 @@ class UserService {
   }
 
   async getAllUsers() {
-    const users = await this.userModel.findAll();
-    return users;
+    try {
+      const users = await this.userModel.findAll();
+      return users;
+    } catch (err) {
+      this.logger.error("Error %o", err);
+      throw err;
+    }
   }
 
   async getUser(userDTO) {
-    const user = await this.userModel.findOne({
-      // * to include only some attributes use:
-      // * attributes: ["username", "id"]
-      where: userDTO,
-    });
-    return user;
+    try {
+      const user = await this.userModel.findOne({
+        // * to include only some attributes use:
+        // * attributes: ["username", "id"]
+        where: userDTO,
+      });
+      return user;
+    } catch (err) {
+      this.logger.error("Error %o", err);
+      throw err;
+    }
   }
 
   async createUser(userDTO) {

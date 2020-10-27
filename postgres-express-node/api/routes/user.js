@@ -35,4 +35,6 @@ module.exports = (rootRouter) => {
     SchemaValidator.validate("deleteUser"),
     UserController.deleteUser
   );
+
+  router.delete("/user/:id", UserController.deleteUserById);
 };
