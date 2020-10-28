@@ -32,10 +32,9 @@ module.exports = ({ app, HttpLogger: logger }) => {
 
   // ultimate error handler
   app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    res.json({
+    res.status(err.status || 500).json({
       error: {
-        message: err.message,
+        message: err.message || "Internal Server Error",
       },
     });
   });

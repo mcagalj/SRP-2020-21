@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const UsersSchemas = require("./user.schemas");
+const UserSchemas = require("./user.schemas");
 const SchemaValidator = require("../middleware/validate");
 const UserController = require("../controllers/user.controller");
 
-SchemaValidator.addSchemas(UsersSchemas);
+SchemaValidator.addSchemas(UserSchemas);
 
 module.exports = (rootRouter) => {
   rootRouter.use("/", router);
