@@ -13,11 +13,11 @@ exports.getTests = async (req, res) => {
   }
 };
 
-exports.getTests = async (req, res) => {
+exports.getTestsByUser = async (req, res) => {
   const { id } = req.params;
   try {
     const tests = await medicalTestServiceInstance.getAllTestsByUser({
-      UserID: id,
+      UserId: id,
     });
     res.json({ tests });
   } catch (err) {

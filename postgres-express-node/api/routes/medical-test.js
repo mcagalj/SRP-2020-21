@@ -11,7 +11,7 @@ module.exports = (rootRouter) => {
   rootRouter.use("/", router);
 
   router.get("/tests", UserController.getTests);
-  router.get("/tests/:id", UserController.getTests);
+  router.get("/tests/:id", UserController.getTestsByUser);
 
   //   router.get(
   //     "/user",

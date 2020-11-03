@@ -6,10 +6,7 @@ class MedicalTestService {
 
   async getAllTests() {
     try {
-      const tests = await this.testModel.findAll({
-        // * to include only some attributes use:
-        // * attributes: ["id", "name", "result", ...]
-      });
+      const tests = await this.testModel.findAll();
       return tests;
     } catch (err) {
       this.logger.error("Error %o", err);
