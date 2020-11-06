@@ -3,39 +3,26 @@ const router = express.Router();
 
 const MedicalTestSchemas = require("./medical-test.schemas");
 const SchemaValidator = require("../middleware/validate");
-const UserController = require("../controllers/medical-test.controller");
+const MedicalTestController = require("../controllers/medical-test.controller");
 
 SchemaValidator.addSchemas(MedicalTestSchemas);
 
 module.exports = (rootRouter) => {
   rootRouter.use("/", router);
 
-  router.get("/tests", UserController.getTests);
-  router.get("/tests/:id(\\d+)", UserController.getTestsByUser);
+  router.get("/tests", MedicalTestController.getTests);
+  router.get("/tests/:id(\\d+)", MedicalTestController.getTestsByUser);
+  router.get(
+    "/tests/query",
+    SchemaValidator.validate("getTestQuery"),
+    MedicalTestController.getTestQuery
+  );
 
-  //   router.get(
-  //     "/user",
-  //     SchemaValidator.validate("getUser"),
-  //     UserController.getUser
-  //   );
+  router.post(
+    "/test",
+    SchemaValidator.validate("createTest"),
+    MedicalTestController.createTest
+  );
 
-  //   router.post(
-  //     "/user",
-  //     SchemaValidator.validate("createUser"),
-  //     UserController.createUser
-  //   );
-
-  //   router.put(
-  //     "/user/:id",
-  //     SchemaValidator.validate("updateUser"),
-  //     UserController.updateUser
-  //   );
-
-  //   router.delete(
-  //     "/user",
-  //     SchemaValidator.validate("deleteUser"),
-  //     UserController.deleteUser
-  //   );
-
-  //   router.delete("/user/:id", UserController.deleteUserById);
+  router.delete("/test/:id(\\d+)", MedicalTestController.deleteTestById);
 };
