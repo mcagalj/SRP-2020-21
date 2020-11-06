@@ -25,7 +25,7 @@ module.exports = (rootRouter) => {
   );
 
   router.put(
-    "/user/:id",
+    "/user/:id(\\d+)",
     SchemaValidator.validate("updateUser"),
     UserController.updateUser
   );
@@ -36,5 +36,5 @@ module.exports = (rootRouter) => {
     UserController.deleteUser
   );
 
-  router.delete("/user/:id", UserController.deleteUserById);
+  router.delete("/user/:id(\\d+)", UserController.deleteUserById);
 };
