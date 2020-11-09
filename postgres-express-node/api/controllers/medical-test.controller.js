@@ -74,7 +74,7 @@ exports.createTest = async (req, res) => {
       // ! the model in the encryption computation using AES-GCM mode with AAD
       result,
     });
-    res.json({ test });
+    res.status(201).json({ test });
   } catch (err) {
     Logger.error(err);
     return res.status(400).json({ error: { message: err.message } });

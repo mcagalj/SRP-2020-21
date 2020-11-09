@@ -28,7 +28,7 @@ exports.createUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await userServiceInstance.createUser({ username, password });
-    res.json({ user });
+    res.status(201).json({ user });
   } catch (err) {
     Logger.error(err);
     return res.status(400).json({ error: { message: err.message } });
