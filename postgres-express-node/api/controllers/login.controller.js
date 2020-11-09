@@ -10,7 +10,7 @@ exports.login = async (req, res) => {
       username,
       password,
     });
-    return res.json({ user, token });
+    return res.status(201).json({ user, token });
   } catch (err) {
     Logger.error(err);
     return res.status(400).json({ error: { message: err.message } });

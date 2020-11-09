@@ -25,20 +25,6 @@ if (process.env.NODE_ENV !== "development") {
   );
 }
 
-// const LoggerInstance = winston.createLogger({
-//   level: config.logs.winston.level,
-//   levels: winston.config.npm.levels,
-//   format: winston.format.combine(
-//     winston.format.timestamp({
-//       format: "YYYY-MM-DD HH:mm:ss",
-//     }),
-//     winston.format.errors({ stack: true }),
-//     winston.format.splat(),
-//     winston.format.json()
-//   ),
-//   transports,
-// });
-
 winston.loggers.add("logger", {
   level: config.logs.winston.level,
   levels: winston.config.npm.levels,
@@ -65,6 +51,9 @@ const HttpLoggerInstance = morgan(config.logs.morgan.format, {
     },
   },
 });
+
+morgan.token("user", (req, res) => (req.user ? req.user["username"] : ""));
+morgan.token("role", (req, res) => (req.user ? req.user["role"] : ""));
 
 module.exports = {
   Logger: LoggerInstance || DefaultLogger,

@@ -31,5 +31,6 @@ module.exports = {
     secret: process.env.JWT_SECRET,
     algorithms: ["HS256"],
     expiresIn: "1h",
+    exclude: { path: [{ url: "/api/login", methods: ["POST"] }] },
   },
 };
