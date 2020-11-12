@@ -37,4 +37,12 @@ module.exports = {
     expiresIn: process.env.JWT_DURATION || "1h",
     exclude: { path: [{ url: "/api/login", methods: ["POST"] }] },
   },
+
+  // API rate limiter
+  rateLimiter: {
+    global: {
+      points: 10, // number of requests
+      duration: 60, // per "duration" seconds by an IP
+    },
+  },
 };
