@@ -18,7 +18,7 @@ const rateLimiterMiddleware = async (req, res, next) => {
       "X-RateLimit-Remaining": rateLimiterRes.remainingPoints,
       "X-RateLimit-Reset": new Date(Date.now() + rateLimiterRes.msBeforeNext),
     });
-    res.status(429).send("Too Many Requests");
+    res.status(429).json({ error: { message: "Too Many Requests" } });
   }
 };
 
