@@ -43,7 +43,9 @@ exports.login = async (req, res) => {
             res.set({
               "Retry-After": Math.round(rlRejected.msBeforeNext / 1000) || 1,
             });
-            return res.status(429).json({ message: "Too Many Requests" });
+            return res
+              .status(429)
+              .json({ error: { message: "Too Many Requests" } });
           }
         }
       default:
