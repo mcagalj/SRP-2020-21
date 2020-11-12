@@ -3,6 +3,22 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+
+class UsernameValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "UsernameValidationError";
+  }
+}
+
+class PasswordValidationError extends Error {
+  constructor(message, username) {
+    super(message);
+    this.name = "PasswordValidationError";
+    this.username = username;
+  }
+}
+
 class LoginService {
   constructor({ logger, userModel }) {
     this.userModel = userModel;
@@ -16,7 +32,7 @@ class LoginService {
 
     if (!userRecord) {
       this.logger.error("User not registered");
-      throw new Error("Authentication failed");
+      throw new UsernameValidationError("Authentication failed");
     }
 
     this.logger.info("Checking password");
@@ -44,7 +60,7 @@ class LoginService {
     }
 
     this.logger.error("Invalid password");
-    throw new Error("Authentication failed");
+    throw new PasswordValidationError("Authentication failed", username);
   }
 
   generateToken(payload) {
