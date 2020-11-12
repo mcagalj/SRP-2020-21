@@ -7,6 +7,13 @@ if (envFound.error) {
   throw new Error("Couldn't find .env file");
 }
 
+const CONSTANTS = {
+  maxConsecutiveFailsByUsernameAndIP: 5,
+  oneMinute: 60,
+  oneHour: 60 * 60,
+  oneDay: 60 * 60 * 24,
+};
+
 /**
  * Express app config
  */
@@ -38,11 +45,16 @@ module.exports = {
     exclude: { path: [{ url: "/api/login", methods: ["POST"] }] },
   },
 
-  // API rate limiter
+  // API rate limiter (rate-limiter-flexible)
   rateLimiter: {
     global: {
       points: 10, // number of requests
-      duration: 60, // per "duration" seconds by an IP
+      duration: 1, // per "duration" seconds by an IP
+    },
+    loginPath: {
+      points: CONSTANTS.maxConsecutiveFailsByUsername,
+      duration: CONSTANTS.oneDay * 10,
+      blockDuration: CONSTANTS.oneMinute / 6,
     },
   },
 };
