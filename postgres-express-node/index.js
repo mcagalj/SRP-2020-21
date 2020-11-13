@@ -1,3 +1,5 @@
+const fs = require("fs");
+const axios = require("axios").default;
 const { sequelize, User, MedicalTest } = require("./models");
 const {
   fieldEncryption,
@@ -55,21 +57,53 @@ function printMedicalTests({ username = null, tests }) {
   console.table(results);
 }
 
+const options = ({ username, password, port = 8081 }) => ({
+  method: "POST",
+  url: `http://localhost:${port}/api/login`,
+  headers: { "Content-Type": "application/json" },
+  data: { username, password },
+});
+
+const testWord = async (data) => {
+  const words = data.split(/\r?\n/);
+  for (word of words) {
+    try {
+      console.log(`Testing: ${word}`);
+
+      const { data } = await axios.request(
+        options({ username: "mcagalj", password: word })
+      );
+
+      console.log(`Response: ${JSON.stringify(data, null, 2)}\n`);
+      break;
+    } catch (err) {
+      console.log(err.message);
+      console.log(`\n`);
+    }
+  }
+};
+
 async function init() {
+  const readStream = fs.createReadStream("dictionary.txt", {
+    encoding: "utf8",
+  });
+
+  readStream.on("data", testWord);
+
   // await assertDatabaseConnectionOk();
   // let user = await getUserByUsername("john");
   // console.log(user);
   // user = await getUserByUsername("mirta");
   // console.log(user);
-  try {
-    let tests = await getMedicalTests({
-      attributes: ["UserId", "name", "result", "timestamp"],
-      include: { model: User, attributes: ["username"] },
-    });
-    printMedicalTests({ tests });
-  } catch (err) {
-    console.log(err.message);
-  }
+  // try {
+  //   let tests = await getMedicalTests({
+  //     attributes: ["UserId", "name", "result", "timestamp"],
+  //     include: { model: User, attributes: ["username"] },
+  //   });
+  //   printMedicalTests({ tests });
+  // } catch (err) {
+  //   console.log(err.message);
+  // }
   // let username = "mirta";
   // tests = await getMedicalTestsForUser(username);
   // printMedicalTests({ username, tests });
@@ -90,31 +124,27 @@ async function init() {
   // } catch (error) {
   //   console.log(error.message);
   // }
-
-  try {
-    const { id } = await getUserByUsername("john", { attributes: ["id"] });
-
-    if (id) {
-      let newTest = MedicalTest.build({
-        UserId: id,
-        name: "HIV",
-        timestamp: new Date(),
-        // ! apparently, the value that we are setting using
-        // ! a set() function should appear last to be able
-        // ! to read the other fields from the model in the
-        // ! computation
-        result: "negative",
-      });
-
-      newTest = await newTest.save();
-    }
-
-    tests = await getMedicalTestsForUser("john");
-    printMedicalTests({ username: "john", tests });
-  } catch (err) {
-    console.log(err.message);
-    // console.log(err);
-  }
+  // try {
+  //   const { id } = await getUserByUsername("john", { attributes: ["id"] });
+  //   if (id) {
+  //     let newTest = MedicalTest.build({
+  //       UserId: id,
+  //       name: "HIV",
+  //       timestamp: new Date(),
+  //       // ! apparently, the value that we are setting using
+  //       // ! a set() function should appear last to be able
+  //       // ! to read the other fields from the model in the
+  //       // ! computation
+  //       result: "negative",
+  //     });
+  //     newTest = await newTest.save();
+  //   }
+  //   tests = await getMedicalTestsForUser("john");
+  //   printMedicalTests({ username: "john", tests });
+  // } catch (err) {
+  //   console.log(err.message);
+  //   // console.log(err);
+  // }
 }
 
 init();

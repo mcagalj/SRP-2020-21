@@ -8,7 +8,7 @@ if (envFound.error) {
 }
 
 const CONSTANTS = {
-  maxConsecutiveFailsByUsernameAndIP: 5,
+  maxConsecutiveFailsByUsername: 5,
   oneMinute: 60,
   oneHour: 60 * 60,
   oneDay: 60 * 60 * 24,

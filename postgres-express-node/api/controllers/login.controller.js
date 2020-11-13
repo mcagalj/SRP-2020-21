@@ -6,21 +6,36 @@ const { loginServiceInstance } = require("../../services");
 const Logger = winston.loggers.get("logger");
 
 // Setup Rate Limiter
-const loginRateLimiter = new RateLimiterMemory(config.rateLimiter.loginPath);
+const loginLimiter = new RateLimiterMemory(config.rateLimiter.loginPath);
+
+const tooManyRequests = (limiterRes, res) => {
+  const retrySecs = Math.round(limiterRes.msBeforeNext / 1000) || 1;
+  if (retrySecs > 0) {
+    res.set({ "Retry-After": retrySecs });
+    return res.status(429).json({ error: { message: "Too Many Requests" } });
+  }
+};
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const loginRateLimiterRes = await loginRateLimiter.get(username);
+    const loginLimiterRes = await loginLimiter.get(username);
+
+    if (
+      loginLimiterRes &&
+      loginLimiterRes.consumedPoints > config.rateLimiter.loginPath.points
+    ) {
+      return tooManyRequests(loginLimiterRes, res);
+    }
 
     const { user, token } = await loginServiceInstance.login({
       username,
       password,
     });
 
-    if (loginRateLimiterRes && loginRateLimiterRes.consumedPoints > 0) {
-      await loginRateLimiter.delete(username);
+    if (loginLimiterRes && loginLimiterRes.consumedPoints > 0) {
+      await loginLimiter.delete(username);
     }
 
     return res.json({ user, token });
@@ -32,20 +47,15 @@ exports.login = async (req, res) => {
         return res.status(401).json({ error: { message: err.message } });
       case "PasswordValidationError":
         try {
-          await loginRateLimiter.consume(err.username);
+          await loginLimiter.consume(err.username);
           return res.status(401).json({ error: { message: err.message } });
-        } catch (rlRejected) {
-          if (rlRejected instanceof Error) {
+        } catch (loginLimiterRejected) {
+          if (loginLimiterRejected instanceof Error) {
             return res
               .status(400)
-              .json({ error: { message: rlRejected.message } });
+              .json({ error: { message: loginLimiterRejected.message } });
           } else {
-            res.set({
-              "Retry-After": Math.round(rlRejected.msBeforeNext / 1000) || 1,
-            });
-            return res
-              .status(429)
-              .json({ error: { message: "Too Many Requests" } });
+            return tooManyRequests(loginLimiterRejected, res);
           }
         }
       default:
