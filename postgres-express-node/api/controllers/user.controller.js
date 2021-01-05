@@ -25,9 +25,13 @@ exports.getUser = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, roleId = null } = req.body;
   try {
-    const user = await userServiceInstance.createUser({ username, password });
+    const user = await userServiceInstance.createUser({
+      username,
+      password,
+      roleId,
+    });
     res.status(201).json({ user });
   } catch (err) {
     Logger.error(err);
@@ -37,12 +41,13 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
-  const { username, password } = req.body;
+  const { username, password, roleId = null } = req.body;
   try {
     const user = await userServiceInstance.updateUser({
       id,
       username,
       password,
+      roleId,
     });
     res.json({ user });
   } catch (err) {

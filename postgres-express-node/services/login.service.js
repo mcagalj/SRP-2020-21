@@ -42,7 +42,7 @@ class LoginService {
 
       const user = {
         username: userRecord.username,
-        role: userRecord.role || "guest",
+        role: userRecord.roleId || "",
       };
 
       const payload = {

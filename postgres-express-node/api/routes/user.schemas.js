@@ -13,6 +13,7 @@ exports.createUser = {
   properties: {
     username: { type: "string", minLength: 1 },
     password: { type: "string", minLength: 8 },
+    roleId: { type: "integer" },
   },
   required: ["username", "password"],
 };
@@ -23,8 +24,13 @@ exports.updateUser = {
   properties: {
     username: { type: "string", minLength: 1 },
     password: { type: "string", minLength: 8 },
+    roleId: { type: "integer" },
   },
-  anyOf: [{ required: ["username"] }, { required: ["password"] }],
+  anyOf: [
+    { required: ["username"] },
+    { required: ["password"] },
+    { required: ["roleId"] },
+  ],
 };
 
 exports.deleteUser = {
