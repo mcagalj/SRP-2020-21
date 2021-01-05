@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
+const { Role } = require("../models");
+
 class UsernameValidationError extends Error {
   constructor(message) {
     super(message);
@@ -28,6 +30,10 @@ class LoginService {
   async login({ username, password }) {
     const userRecord = await this.userModel.findOne({
       where: { username },
+      include: {
+        model: Role,
+        attributes: ["name"],
+      },
     });
 
     if (!userRecord) {
@@ -40,9 +46,14 @@ class LoginService {
     if (validPassword) {
       this.logger.info("Password correct so proceed and generate a JWT");
 
+      const role =
+        userRecord.Role && userRecord.Role.name
+          ? userRecord.Role.name
+          : "guest";
+
       const user = {
         username: userRecord.username,
-        role: userRecord.roleId || "",
+        role,
       };
 
       const payload = {
