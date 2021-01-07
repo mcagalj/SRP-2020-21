@@ -52,6 +52,7 @@ class LoginService {
           : "guest";
 
       const user = {
+        id: userRecord.id,
         username: userRecord.username,
         role,
       };

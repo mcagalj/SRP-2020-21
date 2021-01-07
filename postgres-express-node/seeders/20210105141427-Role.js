@@ -25,12 +25,12 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: "admin",
+          name: "doctor",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "system",
+          name: "admin",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
