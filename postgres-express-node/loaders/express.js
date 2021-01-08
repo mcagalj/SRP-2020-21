@@ -3,6 +3,7 @@ const jwt = require("express-jwt");
 const cors = require("cors");
 const config = require("../config");
 const rateLimiterMiddleware = require("../api/middleware/api-rate-limiter");
+const provideAbility = require("../api/middleware/provide-ability");
 const routes = require("../api");
 module.exports = ({ app, HttpLogger: logger }) => {
   //---------------------------
@@ -22,6 +23,7 @@ module.exports = ({ app, HttpLogger: logger }) => {
       algorithms: config.jwt.algorithms,
     }).unless(config.jwt.exclude)
   );
+  app.use(provideAbility); // this should go after jwt verification
 
   //---------------------------
   // LOAD/MOUNT API ROUTES
