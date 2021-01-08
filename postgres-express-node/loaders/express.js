@@ -1,10 +1,12 @@
 const express = require("express");
+require("express-async-errors");
 const jwt = require("express-jwt");
 const cors = require("cors");
 const config = require("../config");
 const rateLimiterMiddleware = require("../api/middleware/api-rate-limiter");
 const provideAbility = require("../api/middleware/provide-ability");
 const routes = require("../api");
+const { ForbiddenError } = require("@casl/ability");
 module.exports = ({ app, HttpLogger: logger }) => {
   //---------------------------
   // REGISTER MIDDLEWARE
@@ -46,6 +48,8 @@ module.exports = ({ app, HttpLogger: logger }) => {
     if (err.name === "UnauthorizedError") {
       err.status = 401;
       err.message = "Not authorized (invalid token)";
+    } else if (err instanceof ForbiddenError) {
+      err.status = 403;
     }
 
     res.status(err.status || 500).json({

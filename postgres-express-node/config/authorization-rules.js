@@ -4,7 +4,11 @@
 //
 // Source: https://github.com/stalniy/casl-examples/blob/master/packages/express-blog/src/modules/auth/abilities.js
 
-const { AbilityBuilder, Ability } = require("@casl/ability");
+const { AbilityBuilder, Ability, ForbiddenError } = require("@casl/ability");
+
+ForbiddenError.setDefaultMessage(
+  (error) => `Not authorized for "${error.action}" on "${error.subjectType}"`
+);
 
 let ANONYMOUS_ABILITY;
 
@@ -59,7 +63,16 @@ function defineUserRules({ can }, user) {
 }
 
 function defineDoctorRules({ can }) {
-  can(["read"], "MedicalTest");
+  // We allow doctors read access to all MedicalTests.
+  // To implement this policy in CASL we use a simple
+  // trick of merely checking if field UserId field
+  // exists in the given MedicalTest object (we do not
+  // verify the owner of the given test as in the case
+  // of regular users).
+  //
+  // To learn more about the used operator "$exists"
+  // please check: https://casl.js.org/v4/en/guide/conditions-in-depth
+  can("read", "MedicalTest", { UserId: { $exists: true } }); // we essentially allow doctors
 }
 
 function defineAnonymousRules({ can }) {}
