@@ -2,7 +2,7 @@ const winston = require("winston");
 const { Op } = require("sequelize");
 const { ForbiddenError, subject } = require("@casl/ability");
 const { medicalTestServiceInstance } = require("../../services");
-const Logger = winston.loggers.get("logger");
+const logger = winston.loggers.get("logger");
 
 exports.getTests = async (req, res) => {
   ForbiddenError.from(req.ability).throwUnlessCan(

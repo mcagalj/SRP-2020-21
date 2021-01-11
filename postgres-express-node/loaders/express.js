@@ -7,14 +7,14 @@ const rateLimiterMiddleware = require("../api/middleware/api-rate-limiter");
 const provideAbility = require("../api/middleware/provide-ability");
 const routes = require("../api");
 const { ForbiddenError } = require("@casl/ability");
-module.exports = ({ app, HttpLogger: logger }) => {
+module.exports = ({ app, HttpLogger, Logger }) => {
   //---------------------------
   // REGISTER MIDDLEWARE
   // (Remember that the order in
   //  which you use the middleware
   //  matters.)
   //---------------------------
-  app.use(logger);
+  app.use(HttpLogger);
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
@@ -57,5 +57,7 @@ module.exports = ({ app, HttpLogger: logger }) => {
         message: err.message || "Internal Server Error",
       },
     });
+
+    Logger.error("Error %o", err);
   });
 };
