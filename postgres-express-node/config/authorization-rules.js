@@ -72,7 +72,7 @@ function defineDoctorRules({ can }) {
   //
   // To learn more about the used operator "$exists"
   // please check: https://casl.js.org/v4/en/guide/conditions-in-depth
-  can("read", "MedicalTest", { UserId: { $exists: true } }); // we essentially allow doctors
+  can("read", "MedicalTest", { UserId: { $exists: true } });
 }
 
 function defineAnonymousRules({ can }) {}
