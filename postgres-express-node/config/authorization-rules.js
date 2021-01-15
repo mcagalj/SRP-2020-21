@@ -48,21 +48,11 @@ function defineRulesFor(user) {
 // =============================
 // "Roles-permissions" mapping
 // -----------------------------
-function defineAdminRules({ can }) {
+function defineAdminRules({ can }, user) {
   can("manage", "all");
 }
 
-function defineUserRules({ can }, user) {
-  // users can only manage own records
-  can(["read", "create", "delete", "update"], "User", {
-    id: user.id,
-  });
-  can(["read", "create", "delete", "update"], "MedicalTest", {
-    UserId: user.id,
-  });
-}
-
-function defineDoctorRules({ can }) {
+function defineDoctorRules({ can }, user) {
   // We allow doctors read access to all MedicalTests.
   // To implement this policy in CASL we use a simple
   // trick of merely checking if field UserId field
@@ -75,7 +65,26 @@ function defineDoctorRules({ can }) {
   can("read", "MedicalTest", { UserId: { $exists: true } });
 }
 
-function defineAnonymousRules({ can }) {}
+function defineUserRules({ can }, user) {
+  // entity User
+  can(["read", "delete"], "User", { id: user.id });
+  can(["update"], "User", ["username", "password"], {
+    id: user.id,
+  });
+
+  // entity MedicalTest
+  can(["create", "read", "delete"], "MedicalTest", {
+    UserId: user.id,
+  });
+  can(["update"], "MedicalTest", ["name", "result"], {
+    UserId: user.id,
+  });
+}
+
+function defineAnonymousRules({ can }, user) {
+  // entity User
+  can("create", "User");
+}
 
 module.exports = {
   defineRulesFor,

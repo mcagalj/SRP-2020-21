@@ -1,14 +1,11 @@
 const winston = require("winston");
+const { ForbiddenError, subject } = require("@casl/ability");
 const { roleServiceInstance } = require("../../services");
 
 const Logger = winston.loggers.get("logger");
 
 exports.getRoles = async (req, res) => {
-  try {
-    const roles = await roleServiceInstance.getRoles();
-    res.json({ roles });
-  } catch (err) {
-    Logger.error(err);
-    return res.status(400).json({ error: { message: err.message } });
-  }
+  ForbiddenError.from(req.ability).throwUnlessCan("read", "Roles");
+  const roles = await roleServiceInstance.getRoles();
+  res.json({ roles });
 };

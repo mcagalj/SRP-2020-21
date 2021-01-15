@@ -49,7 +49,7 @@ class LoginService {
       const role =
         userRecord.Role && userRecord.Role.name
           ? userRecord.Role.name
-          : "guest";
+          : config.defaultRole;
 
       const user = {
         id: userRecord.id,

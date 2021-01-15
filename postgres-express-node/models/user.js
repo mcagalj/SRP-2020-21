@@ -31,9 +31,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         validate: {
           async roleExists(roleId) {
+            if (!roleId) return;
+
             const role = await sequelize.models.Role.findOne({
               where: { id: roleId },
             });
+
             if (!role) {
               throw new Error(`Specified role ${roleId} does not exist`);
             }

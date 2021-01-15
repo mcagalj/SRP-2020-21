@@ -42,7 +42,13 @@ module.exports = {
     secret: process.env.JWT_SECRET,
     algorithms: ["HS256"],
     expiresIn: process.env.JWT_DURATION || "1h",
-    exclude: { path: [{ url: "/api/login", methods: ["POST"] }] },
+    exclude: {
+      path: [
+        { url: "/api", methods: ["GET"] },
+        { url: "/api/login", methods: ["POST"] },
+        { url: "/api/user", methods: ["POST"] },
+      ],
+    },
   },
 
   // API rate limiter (rate-limiter-flexible)
@@ -57,4 +63,5 @@ module.exports = {
       blockDuration: CONSTANTS.oneMinute / 6,
     },
   },
+  defaultRole: "user",
 };

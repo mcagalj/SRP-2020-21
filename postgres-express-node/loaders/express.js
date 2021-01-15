@@ -45,11 +45,14 @@ module.exports = ({ app, HttpLogger, Logger }) => {
 
   // ultimate error handler
   app.use((err, req, res, next) => {
+    console.log(err);
     if (err.name === "UnauthorizedError") {
       err.status = 401;
       err.message = "Not authorized (invalid token)";
     } else if (err instanceof ForbiddenError) {
       err.status = 403;
+    } else if ((err.name = "ValidationError")) {
+      err.status = 400;
     }
 
     res.status(err.status || 500).json({
