@@ -51,7 +51,7 @@ module.exports = ({ app, HttpLogger, Logger }) => {
       err.message = "Not authorized (invalid token)";
     } else if (err instanceof ForbiddenError) {
       err.status = 403;
-    } else if ((err.name = "ValidationError")) {
+    } else if (err.name === "ValidationError") {
       err.status = 400;
     }
 
