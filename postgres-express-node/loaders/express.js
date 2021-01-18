@@ -25,7 +25,7 @@ module.exports = ({ app, HttpLogger, Logger }) => {
       algorithms: config.jwt.algorithms,
     }).unless(config.jwt.exclude)
   );
-  app.use(provideAbility); // this should go after jwt verification
+  app.use(provideAbility({ logger: Logger })); // this should go after jwt verification
 
   //---------------------------
   // LOAD/MOUNT API ROUTES
@@ -45,7 +45,6 @@ module.exports = ({ app, HttpLogger, Logger }) => {
 
   // ultimate error handler
   app.use((err, req, res, next) => {
-    console.log(err);
     if (err.name === "UnauthorizedError") {
       err.status = 401;
       err.message = "Not authorized (invalid token)";
@@ -61,6 +60,6 @@ module.exports = ({ app, HttpLogger, Logger }) => {
       },
     });
 
-    Logger.error("Error %o", err);
+    Logger.error(`${err.name}: ${err.message}`);
   });
 };

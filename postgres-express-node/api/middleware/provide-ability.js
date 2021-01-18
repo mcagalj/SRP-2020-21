@@ -2,9 +2,15 @@
 const { defineAbilityFor } = require("../../config/authorization-rules");
 
 // const ABILITIES_CACHE = new LRU(100); // set the cache size
+const userDetails = (user) =>
+  user
+    ? `User ${user.username} (${user.id}) with role ${user.role.toUpperCase()}`
+    : "User with role ANONYMOUS";
 
-const provideAbility = (req, _, next) => {
+const provideAbility = ({ logger }) => (req, _, next) => {
   req.ability = defineAbilityFor(req.user);
+  logger.info(userDetails(req.user));
+  logger.info("Rules:  %o", req.ability.rules);
   next();
 };
 
